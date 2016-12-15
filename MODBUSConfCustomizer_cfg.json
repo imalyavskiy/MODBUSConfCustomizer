@@ -3,8 +3,9 @@
   "DST":                  "C:\\Users\\i.malyavskiy\\Desktop\\temp\\ModBus\\MBTCPMaster_Station1_14k_cpy.xmlcfg",
   "CMD": [
     {
-      "NAME":               "CountIf",
+      "TYPE":               "CountIf",
       "DESCR":              "Incoming parameters count. For Station #1, by ModbusTCP protocol for \"Modbus TCP Master 1\" module.",
+      "CMDID":              "265157D0-45F5-4ade-9E57-6646B196E13B",
       "AND": {
         "TAG":              "Property",
         "ATTR": {
@@ -22,8 +23,9 @@
       }
     },
     {
-      "NAME":               "CountIf",
+      "TYPE":               "CountIf",
       "DESCR":              "Outgoing parameters count. For Station #1, by ModbusTCP protocol for \"Modbus TCP Master 1\" module.",
+      "CMDID":              "41046EF5-7EE2-466e-8A08-00E3E5806ABD",
       "AND": {
         "TAG":              "Property",
         "ATTR": {
@@ -41,8 +43,28 @@
       }
     },
     {
-      "NAME":               "CountIf",
+      "TYPE":               "CountIf",
       "DESCR":              "Overall parameters count. For Station #1, by ModbusTCP protocol for \"Modbus TCP Master 1\" module.",
+      "CMDID":              "284A3284-FD41-42a1-988A-3F6DA16B5218",
+      "AND": {
+        "TAG":              "Property",
+        "ATTR": {
+          "Id":             "5000",
+          "Type":           "String",
+          "Value": {
+            "ModuleId":     "Modbus TCP Master 1",
+            "Protocol":     "ModbusTCP",
+            "Station":      "1",
+            "Type":         "Protocol"
+          }
+        }
+      }
+    },
+    {
+      "TYPE":               "ChangeIf",
+      "DESCR":              "Just a stub for future use. For Station #1, by ModbusTCP protocol for \"Modbus TCP Master 1\" module.",
+      "CMDID":              "D99BBF8C-2747-4b9d-8A55-1E239C016079",
+      "DEPENDS":            ["284A3284-FD41-42a1-988A-3F6DA16B5218","41046EF5-7EE2-466e-8A08-00E3E5806ABD","265157D0-45F5-4ade-9E57-6646B196E13B" ],
       "AND": {
         "TAG":              "Property",
         "ATTR": {

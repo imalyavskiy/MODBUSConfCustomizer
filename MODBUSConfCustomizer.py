@@ -4,14 +4,6 @@ import xml.etree.ElementTree
 import re
 import json
 
-config = {"SRC": "<<place a path for source file here>>",
-          "DST": "<<place a path for destination file here>>",
-          "CMD": {"CMD_NAME": "<<Command name>>",
-                  "PARAM_NAME1": "<<Command parameter 1 value>>",
-                  "PARAM_NAME2": "<<Command parameter 2 value>>"
-                  }
-          }
-
 
 def read_cmd():
     if len(sys.argv) < 2:
@@ -34,11 +26,16 @@ def read_config(file_path):
 
 def process_xml():
     tree = xml.etree.ElementTree.parse(config["SRC"])
-    process_element(tree.getroot())
+    if config.get("CMD") is None:
+        print("No commands provided. Nothing to execute.")
+        return
+
+    for command in config["CMD"]:
+        process_element(tree.getroot(), command)
 
     if config.get("CMD") is not None:
         for command in config["CMD"]:
-            print("Command {0}".format(command["NAME"]))
+            print("Command {0}".format(command["TYPE"]))
             if command.get("DESCR") is not None:
                 print("\tDescription: \"{0}\"".format(command["DESCR"]))
             print("\tResulted with {0}".format(command["RESULT"]))
@@ -47,26 +44,26 @@ def process_xml():
         tree.write(config["DST"], encoding="utf-8", xml_declaration=True)
 
 
-def process_element(element):
-    execute_commands(element)
+def process_element(element, command_cfg):
+    execute_command(element, command_cfg)
     for child in element:
-        process_element(child)
+        process_element(child, command_cfg)
 
 
-def execute_commands(element):
-    commands = config["CMD"]
-    for command in commands:
-        if command["NAME"] == "CountIf":
-            count_if(command, element)
-        if command["NAME"] == "ChangeIf":
-            change_if(command, element)
+def execute_command(element, command_cfg):
+    if command_cfg["TYPE"] == "CountIf":
+        count_if(element, command_cfg)
+    if command_cfg["TYPE"] == "ChangeIf":
+        change_if(element, command_cfg)
 
 
-def change_if(command, element):
+def change_if(element, command):
+    if command.get("RESULT") is None:
+        command["RESULT"] = 0
     pass
 
 
-def count_if(command, element):
+def count_if(element, command):
     if command.get("RESULT") is None:
         command["RESULT"] = 0
 
@@ -185,9 +182,6 @@ def process_value(value, operation_and_values):
 
 
 def main():
-#    with open("D:\\config.json", "w") as json_cfg:
-#        json.dump(config, json_cfg, indent=4, separators=(',', ': '))
-
     read_config(read_cmd())
     process_xml()
 

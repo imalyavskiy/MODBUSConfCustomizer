@@ -1,0 +1,21 @@
+{
+  "SRC": "C:\\Users\\i.malyavskiy\\Desktop\\temp\\ModBus\\MBTCPMaster_Station1_14k.xmlcfg",
+  "DST": "C:\\Users\\i.malyavskiy\\Desktop\\temp\\ModBus\\MBTCPMaster_Station1_14k_cpy.xmlcfg",
+  "CMD": {
+    "NAME": "CountIf",
+    "AND": {
+      "TAG": "Property",
+      "ATTR": {
+        "Id": "5000",
+        "Type": "String",
+        "Value": {
+          "ModuleId": "Modbus TCP Master 1",
+          "Protocol": "ModbusTCP",
+          "Station": "1",
+          "Type": "Protocol",
+          "ProtocolType": "STR-COMMAND"
+        }
+      }
+    }
+  }
+}

@@ -1,23 +1,61 @@
 {
   "SRC":                  "C:\\Users\\i.malyavskiy\\Desktop\\temp\\ModBus\\MBTCPMaster_Station1_14k.xmlcfg",
   "DST":                  "C:\\Users\\i.malyavskiy\\Desktop\\temp\\ModBus\\MBTCPMaster_Station1_14k_cpy.xmlcfg",
-  "CMD": {
-    "NAME":               "CountIf",
-    "AND": {
-      "TAG":              "Property",
-      "ATTR": {
-        "Id":             "5000",
-        "Type":           "String",
-        "Value": {
-          "ModuleId":     "Modbus TCP Master 1",
-          "Protocol":     "ModbusTCP",
-          "Station":      "1",
-          "Type":         "Protocol",
-          "Table":        { "EQ": ["Input Registers", "Holding Registers", "Coils", "Discretes Input"] },
-          "ProtocolType": { "EQ": ["TS", "TM2", "TMC","TMF4", "TM2_Time", "TMC_Time", "TMF4_Time", "STR"] }
+  "CMD": [
+    {
+      "NAME":               "CountIf",
+      "DESCR":              "Incoming parameters count. For Station #1, by ModbusTCP protocol for \"Modbus TCP Master 1\" module.",
+      "AND": {
+        "TAG":              "Property",
+        "ATTR": {
+          "Id":             "5000",
+          "Type":           "String",
+          "Value": {
+            "ModuleId":     "Modbus TCP Master 1",
+            "Protocol":     "ModbusTCP",
+            "Station":      "1",
+            "Type":         "Protocol",
+            "Table":        { "EQ": ["Input Registers", "Holding Registers", "Coils", "Discretes Input"] },
+            "ProtocolType": { "EQ": ["TS", "TM2", "TMC","TMF4", "TM2_Time", "TMC_Time", "TMF4_Time", "STR"] }
+          }
         }
       }
     },
-    "RESULT":           0
-  }
+    {
+      "NAME":               "CountIf",
+      "DESCR":              "Outgoing parameters count. For Station #1, by ModbusTCP protocol for \"Modbus TCP Master 1\" module.",
+      "AND": {
+        "TAG":              "Property",
+        "ATTR": {
+          "Id":             "5000",
+          "Type":           "String",
+          "Value": {
+            "ModuleId":     "Modbus TCP Master 1",
+            "Protocol":     "ModbusTCP",
+            "Station":      "1",
+            "Type":         "Protocol",
+            "Table":        { "EQ": ["Input Registers", "Holding Registers", "Coils", "Discretes Input"] },
+            "ProtocolType": { "EQ": ["TC", "TR2", "TR4", "TRF4", "STR_COMMAND", "TR2_Time", "TR4_Time", "TRF4_Time"] }
+          }
+        }
+      }
+    },
+    {
+      "NAME":               "CountIf",
+      "DESCR":              "Overall parameters count. For Station #1, by ModbusTCP protocol for \"Modbus TCP Master 1\" module.",
+      "AND": {
+        "TAG":              "Property",
+        "ATTR": {
+          "Id":             "5000",
+          "Type":           "String",
+          "Value": {
+            "ModuleId":     "Modbus TCP Master 1",
+            "Protocol":     "ModbusTCP",
+            "Station":      "1",
+            "Type":         "Protocol"
+          }
+        }
+      }
+    }
+  ]
 }

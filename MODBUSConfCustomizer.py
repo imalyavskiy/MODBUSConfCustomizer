@@ -34,28 +34,32 @@ def read_config(file_path):
 
 def process_xml():
     tree = xml.etree.ElementTree.parse(config["SRC"])
-    read_element(tree.getroot())
+    process_element(tree.getroot())
 
-    if config.get("CMD") is not None and config["CMD"].get("RESULT"):
-        print("Command {0} resulted with {1}".format(config["CMD"]["NAME"], config["CMD"]["RESULT"]))
+    if config.get("CMD") is not None:
+        for command in config["CMD"]:
+            print("Command {0}".format(command["NAME"]))
+            if command.get("DESCR") is not None:
+                print("\tDescription: \"{0}\"".format(command["DESCR"]))
+            print("\tResulted with {0}".format(command["RESULT"]))
 
     if config.get("DST") is not None:
         tree.write(config["DST"], encoding="utf-8", xml_declaration=True)
 
 
-def read_element(element):
-    check_command(element)
+def process_element(element):
+    execute_commands(element)
     for child in element:
-        read_element(child)
+        process_element(child)
 
 
-def check_command(element):
-    command = config["CMD"]
-    if command["NAME"] == "CountIf":
-        count_if(command, element)
-    if command["NAME"] == "ChangeIf":
-        change_if(command, element)
-    pass
+def execute_commands(element):
+    commands = config["CMD"]
+    for command in commands:
+        if command["NAME"] == "CountIf":
+            count_if(command, element)
+        if command["NAME"] == "ChangeIf":
+            change_if(command, element)
 
 
 def change_if(command, element):

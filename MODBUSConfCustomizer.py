@@ -68,22 +68,22 @@ def count_if(command, element):
 
     if command.get("AND") is not None:
         block = command["AND"]
-        if block.get("TAG") is not None and element.tag != block["TAG"]:
+        if type(block) == dict:
+            if not process_and(block, element):
+                return
+        else:
             return
-        if block.get("ATTR") is not None:
-            attributes = block["ATTR"]
-            for attr in attributes:
-                if element.attrib.get(attr) is None:
-                    return
-            if attributes.get("Value") is not None:
-                if False == check_value(element, attributes["Value"]):
-                    return
-
-        command["RESULT"] += 1
-    if command.get("OR") is not None:
+    elif command.get("OR") is not None:
         block = command["OR"]
-        pass
-    pass
+        if type(block) == dict:
+            if not process_or(block, element):
+                return
+        else:
+            return
+    else:
+        return
+
+    command["RESULT"] += 1
 
 
 def check_value(element, value_requirements):
@@ -97,8 +97,13 @@ def check_value(element, value_requirements):
 def check_address(address, address_requirements):
     parsed_address = parse_address(address)
     for item in address_requirements:
-        if parsed_address.get(item) is None or parsed_address[item] != address_requirements[item]:
-            return False
+        if parsed_address.get(item) is not None:
+            item_val = address_requirements[item]
+            if type(item_val) == str:
+                if parsed_address[item] != item_val:
+                    return False
+            elif not process_value(parsed_address[item], item_val):
+                return False
     return True
 
 
@@ -113,6 +118,66 @@ def parse_address(address):
         res = address_item.split("=")
         result[res[0]] = res[1]
     return result
+
+
+def process_and(and_block, element):
+    if and_block.get("TAG") is not None:
+        if type(and_block["TAG"]) == str:
+            if element.tag != and_block["TAG"]:
+                return False
+        elif not process_value(element.tag, and_block["TAG"]):
+            return False
+
+    if and_block.get("ATTR") is not None:
+        attributes = and_block["ATTR"]
+        for attr in attributes:
+            if element.attrib.get(attr) is None:
+                return False
+            if type(attributes[attr]) == str:
+                if attributes[attr] != element.attrib[attr]:
+                    return False
+            elif not process_value(element.attrib[attr], attributes[attr]):
+                return False
+
+        if attributes.get("Value") is not None:
+            if not check_value(element, attributes["Value"]):
+                return False
+    return True
+
+
+def process_or(or_block, element):
+    return False
+
+
+def process_value(value, operation_and_values):
+    if type(operation_and_values) != dict:
+        return True  # not applicable
+    if len(operation_and_values) != 1:
+        return True  # not applicable
+
+    keys = operation_and_values.keys()
+    if not("EQ" in keys or "NEQ" in keys or "LT" in keys or "GT" in keys or "GTEQ" in keys or "LTEQ" in keys):
+        return True  # not applicable
+
+    if "EQ" in keys:
+        for val in operation_and_values["EQ"]:
+            if val == value:
+                return True
+    elif "NEQ" in keys:
+        for val in operation_and_values["EQ"]:
+            if val == value:
+                return False
+        return True
+    elif "LT" in keys:
+        print("Error: operation LT(less then) does not implemented for values.")
+    elif "GT" in keys:
+        print("Error: operation GT(greater then) does not implemented for values.")
+    elif "GTEQ" in keys:
+        print("Error: operation GTEQ(greater then or equals) does not implemented for values.")
+    elif "LTEQ" in keys:
+        print("Error: operation LTEQ(less then or equals) does not implemented for values.")
+
+    return False
 
 
 def main():

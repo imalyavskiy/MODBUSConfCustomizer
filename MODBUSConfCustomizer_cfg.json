@@ -1,21 +1,23 @@
 {
-  "SRC": "C:\\Users\\i.malyavskiy\\Desktop\\temp\\ModBus\\MBTCPMaster_Station1_14k.xmlcfg",
-  "DST": "C:\\Users\\i.malyavskiy\\Desktop\\temp\\ModBus\\MBTCPMaster_Station1_14k_cpy.xmlcfg",
+  "SRC":                  "C:\\Users\\i.malyavskiy\\Desktop\\temp\\ModBus\\MBTCPMaster_Station1_14k.xmlcfg",
+  "DST":                  "C:\\Users\\i.malyavskiy\\Desktop\\temp\\ModBus\\MBTCPMaster_Station1_14k_cpy.xmlcfg",
   "CMD": {
-    "NAME": "CountIf",
+    "NAME":               "CountIf",
     "AND": {
-      "TAG": "Property",
+      "TAG":              "Property",
       "ATTR": {
-        "Id": "5000",
-        "Type": "String",
+        "Id":             "5000",
+        "Type":           "String",
         "Value": {
-          "ModuleId": "Modbus TCP Master 1",
-          "Protocol": "ModbusTCP",
-          "Station": "1",
-          "Type": "Protocol",
-          "ProtocolType": "STR-COMMAND"
+          "ModuleId":     "Modbus TCP Master 1",
+          "Protocol":     "ModbusTCP",
+          "Station":      "1",
+          "Type":         "Protocol",
+          "Table":        { "EQ": ["Input Registers", "Holding Registers", "Coils", "Discretes Input"] },
+          "ProtocolType": { "EQ": ["TS", "TM2", "TMC","TMF4", "TM2_Time", "TMC_Time", "TMF4_Time", "STR"] }
         }
       }
-    }
+    },
+    "RESULT":           0
   }
 }

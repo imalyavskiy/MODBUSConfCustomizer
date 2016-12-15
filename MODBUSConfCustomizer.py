@@ -102,32 +102,6 @@ def check_address(address, address_requirements):
     return True
 
 
-def read_property(property_item):
-    if property_item.attrib.get("Id") is None:
-        return
-    elif property_item.attrib.get("Type") is None:
-        return
-    elif property_item.attrib.get("Value") is None:
-        return
-    elif property_item.attrib["Id"] == "5000":
-        new_address = str()
-        params = parse_address(property_item.attrib["Value"])
-        params["Category"] = "CAT0"
-        keys = list(params.keys())
-        for n in range(0, len(params)):
-            if n == 0:
-                new_address += "{"
-            new_address += "{0}=({1})".format(keys[n], params[keys[n]])
-            if n < len(params) - 1:
-                new_address += " "
-            else:
-                new_address += "}"
-
-        property_item.attrib["Value"] = new_address
-        return
-    return
-
-
 def parse_address(address):
     result = dict()
     re_param = re.compile("\w+=\((\w+[ -]?)+\)")

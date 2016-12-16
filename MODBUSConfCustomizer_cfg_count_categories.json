@@ -1,0 +1,61 @@
+{
+  "SRC":                  "C:\\Users\\i.malyavskiy\\Desktop\\temp\\ModBus\\MBTCPMaster_Station1_14k_cpy.xmlcfg",
+  "CMD": 
+  {
+    "265157D0-45F5-4ade-9E57-6646B196E13A" : 
+    {
+      "TYPE":               "CountIf",
+      "DESCR":              "Incoming parameters of Category_0 count.",
+      "AND": 
+      {
+        "TAG":              "Property",
+        "ATTR": 
+        {
+          "Id":             "5000",
+          "Type":           "String",
+          "Value": 
+          {
+            "Category":     "Category_0"
+          }
+        }
+      }
+    },
+    "265157D0-45F5-4ade-9E57-6646B196E13B" : 
+    {
+      "TYPE":               "CountIf",
+      "DESCR":              "Incoming parameters of Category_1 count.",
+      "AND": 
+      {
+        "TAG":              "Property",
+        "ATTR": 
+        {
+          "Id":             "5000",
+          "Type":           "String",
+          "Value": 
+          {
+            "Category":     "Category_1"
+          }
+        }
+      }
+    },
+    "265157D0-45F5-4ade-9E57-6646B196E13C" : 
+    {
+      "TYPE":               "CountIf",
+      "DESCR":              "Incoming parameters of Category_2 count.",
+      "AND": 
+      {
+        "TAG":              "Property",
+        "ATTR": 
+        {
+          "Id":             "5000",
+          "Type":           "String",
+          "Value": 
+          {
+            "Category":     "Category_2"
+          }
+        }
+      }
+    }
+  }
+}
+

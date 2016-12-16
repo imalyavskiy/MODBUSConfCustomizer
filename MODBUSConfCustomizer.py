@@ -4,6 +4,9 @@ import xml.etree.ElementTree
 import re
 import json
 
+# the main configuration file
+config = dict()
+
 
 def read_cmd():
     if len(sys.argv) < 2:
@@ -30,17 +33,15 @@ def process_xml():
         print("No commands provided. Nothing to execute.")
         return
 
-    # executing only independent commands
-    commands = config["CMD"]
-
-    execute_commands(tree.getroot(), commands)
+    execute_commands(tree.getroot(), config["CMD"])
 
     if config.get("CMD") is not None:
-        for command in config["CMD"]:
-            print("Command {0}".format(command["TYPE"]))
-            if command.get("DESCR") is not None:
-                print("\tDescription: \"{0}\"".format(command["DESCR"]))
-            print("\tResulted with {0}".format(command["RESULT"]))
+        commands = config["CMD"]
+        for id in commands:
+            print("Command Type:\"{0}\" Id:\"{1}\"".format(commands[id]["TYPE"], id))
+            if commands[id].get("DESCR") is not None:
+                print("\tDescription: \"{0}\"".format(commands[id]["DESCR"]))
+            print("\tResulted with {0}".format(commands[id]["RESULT"]))
 
     if config.get("DST") is not None:
         tree.write(config["DST"], encoding="utf-8", xml_declaration=True)
@@ -88,15 +89,52 @@ def exec_change_if_on_element(command, element):
     numbers = list(command["CHANGES"].keys())
     numbers.sort()
     for number in numbers:
-        if command.get("AND") is not None and type(command.get("AND")) == dict:
-            if process_and(command.get("AND"), element):
-                if change_element(command["CHANGES"][number], element):
-                    command["RESULT"] += 1
+        if command.get("AND") is not None:
+            if type(command.get("AND")) == dict:
+                if process_and(command.get("AND"), element):
+                    if not command["CHANGES"][number].get("COUNT") and not command["CHANGES"][number].get("RESULT"):
+                        if command["CHANGES"][number].get("ELEMENTS_TO_APPLY") is not None:
+                            elements_to_apply = command["CHANGES"][number]["ELEMENTS_TO_APPLY"]
+                            if elements_to_apply.get("PERCENT") is not None and elements_to_apply.get("OF_RESULT") is not None:
+                                if config["CMD"].get(elements_to_apply["OF_RESULT"]) is None:
+                                    raise Exception("The command \"{0}\" "
+                                                    "does not exist".format(elements_to_apply.get("OF_RESULT")))
+                                if config["CMD"][elements_to_apply["OF_RESULT"]].get("RESULT") is None:
+                                    raise Exception("The command \"{0}\" "
+                                                    "was not executed.".format(elements_to_apply.get("OF_RESULT")))
+
+                                if type(elements_to_apply["PERCENT"]) == str:
+                                    percent = int(elements_to_apply["PERCENT"])
+                                else:
+                                    percent = elements_to_apply["PERCENT"]
+
+                                if type(config["CMD"][elements_to_apply["OF_RESULT"]]["RESULT"]):
+                                    whole = int(config["CMD"][elements_to_apply["OF_RESULT"]]["RESULT"])
+                                else:
+                                    whole = int(config["CMD"][elements_to_apply["OF_RESULT"]]["RESULT"])
+
+                                elements_to_apply["COUNT"] = int((whole * (percent / 100.0)) + .5)
+
+                            if elements_to_apply.get("COUNT") is not None:
+                                command["CHANGES"][number]["COUNT"] = elements_to_apply["COUNT"]
+                                command["CHANGES"][number]["RESULT"] = 0
+                            else:
+                                raise Exception("Invalid format of \"CMD\".<CMD_UUID>."
+                                                "\"CHANGES\".<CHANGE IDX>.\"ELEMENTS_TO_APPLY\".")
+
+                    if command["CHANGES"][number]["RESULT"] < command["CHANGES"][number]["COUNT"]:
+                        if change_element(command["CHANGES"][number], element):
+                            command["CHANGES"][number]["RESULT"] += 1
+                            return
+            else:
+                raise Exception("Not a dict")
+        elif command.get("OR") is not None:
+            raise Exception("OR")
 
 
 def change_element(change, element):
     if change.get("TARGET") is None or change.get("OPERATIONS") is None or change.get("ELEMENTS_TO_APPLY") is None:
-        return False
+        raise Exception("Invalid format")
 
     if change["TARGET"].get("ATTRIBUTE") is not None:
         if element.attrib.get(change["TARGET"]["ATTRIBUTE"]) is None:
@@ -110,10 +148,11 @@ def change_element(change, element):
 def change_attribute(change, element):
     attribute_name = change["TARGET"]["ATTRIBUTE"]
     operations = change["OPERATIONS"]
+    attribute_val = element.attrib[attribute_name]
 
-    # непонятно надо ли сортировать ключи или же словарь уже упорядочен по индексу?????
     operation_keys = list(operations.keys())
     operation_keys.sort()
+
     for key in operation_keys:
         operation = operations[key]
         if operation.get("MODE") is None:
@@ -122,11 +161,13 @@ def change_attribute(change, element):
             if operation.get("ORIGIN") is None or operation.get("COUNT") is None:
                 raise Exception("Invalid ERASE_SYMBOLS OPERATION format.")
             if operation["ORIGIN"] == "END":
-                element.attrib[attribute_name] = element.attrib[attribute_name][0: len(element.attrib[attribute_name]) - operation["COUNT"]]
+                attribute_val = attribute_val[0: len(attribute_val) - operation["COUNT"]]
         if operation["MODE"] == "APPEND":
             if operation.get("DATA") is None:
                 raise Exception("Invalid APPEND OPERATION format.")
-            element.attrib[attribute_name] += operation["DATA"]
+            attribute_val += operation["DATA"]
+
+    element.attrib[attribute_name] = attribute_val
 
     return True
 
@@ -136,6 +177,12 @@ def change_tag(change, element):
 
 
 def exec_count_if_on_element(command, element):
+    tag = element.tag
+    attrib = element.attrib
+
+    if tag == "Property":
+        tag = tag
+
     if command.get("RESULT") is None:
         command["RESULT"] = 0
 
@@ -163,19 +210,19 @@ def check_value(element, value_requirements):
     if element.attrib.get("Id") is None or element.attrib.get("Type") is None:
         return False  # invalid property format
     if element.attrib["Id"] == "5000" and element.attrib["Type"] == "String":
-        return check_address(element.attrib["Value"], value_requirements)
+        return check_address(parse_address(element.attrib["Value"]), value_requirements)
     return False
 
 
 def check_address(address, address_requirements):
-    parsed_address = parse_address(address)
+    raise Exception("Здесь ошибка: если ключа нет в адресе, то всё равно True")
     for item in address_requirements:
-        if parsed_address.get(item) is not None:
-            item_val = address_requirements[item]
-            if type(item_val) == str:
-                if parsed_address[item] != item_val:
+        if item in address:
+            expected_item_val = address_requirements[item]
+            if type(expected_item_val) == str:
+                if address[item] != expected_item_val:
                     return False
-            elif not process_value(parsed_address[item], item_val):
+            elif not process_value(address[item], expected_item_val):
                 return False
     return True
 
@@ -213,9 +260,8 @@ def process_and(and_block, element):
                 return False
 
         if attributes.get("Value") is not None:
-            if not check_value(element, attributes["Value"]):
-                return False
-    return True
+            return check_value(element, attributes["Value"])
+    return False
 
 
 def process_or(or_block, element):
@@ -243,13 +289,13 @@ def process_value(value, operation_and_values):
                 return False
         return True
     elif "LT" in keys:
-        print("Error: operation LT(less then) does not implemented for values.")
+        raise Exception("Operation LT(less then) does not implemented for values.")
     elif "GT" in keys:
-        print("Error: operation GT(greater then) does not implemented for values.")
+        raise Exception("Operation GT(greater then) does not implemented for values.")
     elif "GTEQ" in keys:
-        print("Error: operation GTEQ(greater then or equals) does not implemented for values.")
+        raise Exception("Operation GTEQ(greater then or equals) does not implemented for values.")
     elif "LTEQ" in keys:
-        print("Error: operation LTEQ(less then or equals) does not implemented for values.")
+        raise Exception("Operation LTEQ(less then or equals) does not implemented for values.")
 
     return False
 

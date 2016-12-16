@@ -59,63 +59,62 @@
         }
       },
       "CHANGES":  {
-          "1": {
-            "TARGET": {"ATTRIBUTE": "Value"},
-            "OPERATIONS":
-            {
-              "1": {
-                "MODE": "ERASE_SYMBOLS",
-                "ORIGIN": "END",
-                "COUNT": 1
-              },
-              "2": {
-                "MODE": "APPEND",
-                "DATA": " Category=(Category_0)}"
-              }
+        "1": {
+          "TARGET": {"ATTRIBUTE": "Value"},
+          "OPERATIONS":
+          {
+            "1": {
+              "MODE": "ERASE_SYMBOLS",
+              "ORIGIN": "END",
+              "COUNT": 1
             },
-            "ELEMENTS_TO_APPLY": {
-              "PERCENT": "20",
-              "OF_RESULT": "265157D0-45F5-4ade-9E57-6646B196E13B"
+            "2": {
+              "MODE": "APPEND",
+              "DATA": " Category=(Category_0)}"
             }
           },
-          "2": {
-            "TARGET": {"ATTRIBUTE": "Value"},
-            "OPERATIONS":
-            {
-              "1": {
-                "MODE": "ERASE_SYMBOLS",
-                "ORIGIN": "END",
-                "COUNT": 1
-              },
-              "2": {
-                "MODE": "APPEND",
-                "DATA": " Category=(Category_1)}"
-              }
-            },
-            "ELEMENTS_TO_APPLY": {
-              "PERCENT": "35",
-              "OF_RESULT": "265157D0-45F5-4ade-9E57-6646B196E13B"
-            }
-          },
-          "3": {
-            "TARGET": {"ATTRIBUTE": "Value"},
-            "OPERATIONS":
-            {
-              "1": {
-                "MODE": "ERASE_SYMBOLS",
-                "ORIGIN": "END",
-                "COUNT": 1
-              },
-              "2": {
-                "MODE": "APPEND",
-                "DATA": " Category=(Category_2)}"
-              }
-            },
-            "ELEMENTS_TO_APPLY": {
-              "PERCENT": "55",
-              "OF_RESULT": "265157D0-45F5-4ade-9E57-6646B196E13B"
-            }
+          "ELEMENTS_TO_APPLY": {
+            "PERCENT": "20",
+            "OF_RESULT": "265157D0-45F5-4ade-9E57-6646B196E13B"
           }
+        },
+        "2": {
+          "TARGET": {"ATTRIBUTE": "Value"},
+          "OPERATIONS":
+          {
+            "1": {
+              "MODE": "ERASE_SYMBOLS",
+              "ORIGIN": "END",
+              "COUNT": 1
+            },
+            "2": {
+              "MODE": "APPEND",
+              "DATA": " Category=(Category_1)}"
+            }
+          },
+          "ELEMENTS_TO_APPLY": {
+            "PERCENT": "35",
+            "OF_RESULT": "265157D0-45F5-4ade-9E57-6646B196E13B"
+          }
+        },
+        "3": {
+          "TARGET": {"ATTRIBUTE": "Value"},
+          "OPERATIONS": {
+            "1": {
+              "MODE": "ERASE_SYMBOLS",
+              "ORIGIN": "END",
+              "COUNT": 1
+            },
+            "2": {
+              "MODE": "APPEND",
+              "DATA": " Category=(Category_2)}"
+            }
+          },
+          "ELEMENTS_TO_APPLY": {
+            "PERCENT": "55",
+            "OF_RESULT": "265157D0-45F5-4ade-9E57-6646B196E13B"
+          }
+        }
       }
     }
   }

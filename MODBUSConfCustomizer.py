@@ -30,8 +30,10 @@ def process_xml():
         print("No commands provided. Nothing to execute.")
         return
 
-    for command in config["CMD"]:
-        process_element(tree.getroot(), command)
+    # executing only independent commands
+    commands = config["CMD"]
+
+    execute_commands(tree.getroot(), commands)
 
     if config.get("CMD") is not None:
         for command in config["CMD"]:
@@ -44,26 +46,43 @@ def process_xml():
         tree.write(config["DST"], encoding="utf-8", xml_declaration=True)
 
 
-def process_element(element, command_cfg):
-    execute_command(element, command_cfg)
+def execute_commands(element, commands):
+    for cmd in commands:
+        curr_cmd = commands[cmd]
+        if curr_cmd.get("DEPENDS") is None:
+            if curr_cmd.get("RESULT") is None:
+                process_element_with_command(element, commands[cmd])
+        elif curr_cmd.get("RESULT") is None:
+            dependent_not_executed_commands = dict()
+            for dep_cmd in curr_cmd["DEPENDS"]:
+                if config["CMD"][dep_cmd].get("RESULT") is None:
+                    dependent_not_executed_commands[dep_cmd] = commands[dep_cmd]
+
+            execute_commands(element, dependent_not_executed_commands)
+
+            process_element_with_command(element, commands[cmd])
+
+
+def process_element_with_command(element, command_cfg):
+    execute_command_on_element(command_cfg, element)
     for child in element:
-        process_element(child, command_cfg)
+        process_element_with_command(child, command_cfg)
 
 
-def execute_command(element, command_cfg):
+def execute_command_on_element(command_cfg, element):
     if command_cfg["TYPE"] == "CountIf":
-        count_if(element, command_cfg)
+        exec_count_if_on_element(command_cfg, element)
     if command_cfg["TYPE"] == "ChangeIf":
-        change_if(element, command_cfg)
+        exec_change_if_on_element(command_cfg, element)
 
 
-def change_if(element, command):
+def exec_change_if_on_element(command, element):
     if command.get("RESULT") is None:
         command["RESULT"] = 0
     pass
 
 
-def count_if(element, command):
+def exec_count_if_on_element(command, element):
     if command.get("RESULT") is None:
         command["RESULT"] = 0
 

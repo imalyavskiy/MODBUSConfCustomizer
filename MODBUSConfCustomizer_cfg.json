@@ -21,58 +21,101 @@
         }
       }
     },
-    "41046EF5-7EE2-466e-8A08-00E3E5806ABD": {
-      "TYPE":               "CountIf",
-      "DESCR":              "Outgoing parameters count. For Station #1, by ModbusTCP protocol for \"Modbus TCP Master 1\" module.",
-      "AND": {
-        "TAG":              "Property",
-        "ATTR": {
-          "Id":             "5000",
-          "Type":           "String",
-          "Value": {
-            "ModuleId":     "Modbus TCP Master 1",
-            "Protocol":     "ModbusTCP",
-            "Station":      "1",
-            "Type":         "Protocol",
-            "Table":        { "EQ": ["Input Registers", "Holding Registers", "Coils", "Discretes Input"] },
-            "ProtocolType": { "EQ": ["TC", "TR2", "TR4", "TRF4", "STR_COMMAND", "TR2_Time", "TR4_Time", "TRF4_Time"] }
-          }
-        }
-      }
-    },
-    "284A3284-FD41-42a1-988A-3F6DA16B5218": {
-      "TYPE":               "CountIf",
-      "DESCR":              "Overall parameters count. For Station #1, by ModbusTCP protocol for \"Modbus TCP Master 1\" module.",
-      "AND": {
-        "TAG":              "Property",
-        "ATTR": {
-          "Id":             "5000",
-          "Type":           "String",
-          "Value": {
-            "ModuleId":     "Modbus TCP Master 1",
-            "Protocol":     "ModbusTCP",
-            "Station":      "1",
-            "Type":         "Protocol"
-          }
-        }
-      }
-    },
     "D99BBF8C-2747-4b9d-8A55-1E239C016079": {
       "TYPE":               "ChangeIf",
       "DESCR":              "Just a stub for future use. For Station #1, by ModbusTCP protocol for \"Modbus TCP Master 1\" module.",
-      "DEPENDS":            ["284A3284-FD41-42a1-988A-3F6DA16B5218","41046EF5-7EE2-466e-8A08-00E3E5806ABD","265157D0-45F5-4ade-9E57-6646B196E13B" ],
+      "DEPENDS":            ["265157D0-45F5-4ade-9E57-6646B196E13B"],
       "AND": {
-        "TAG":              "Property",
+        "TAG": "Property",
         "ATTR": {
-          "Id":             "5000",
-          "Type":           "String",
+          "Id": "5000",
+          "Type": "String",
           "Value": {
-            "ModuleId":     "Modbus TCP Master 1",
-            "Protocol":     "ModbusTCP",
-            "Station":      "1",
-            "Type":         "Protocol"
+            "ModuleId": "Modbus TCP Master 1",
+            "Protocol": "ModbusTCP",
+            "Station": "1",
+            "Type": "Protocol",
+            "Table": {
+              "EQ": [
+                "Input Registers",
+                "Holding Registers",
+                "Coils",
+                "Discretes Input"
+              ]
+            },
+            "ProtocolType": {
+              "EQ": [
+                "TS",
+                "TM2",
+                "TMC",
+                "TMF4",
+                "TM2_Time",
+                "TMC_Time",
+                "TMF4_Time",
+                "STR"
+              ]
+            }
           }
         }
+      },
+      "CHANGES":  {
+          "1": {
+            "TARGET": {"ATTRIBUTE": "Value"},
+            "OPERATIONS":
+            {
+              "1": {
+                "MODE": "ERASE_SYMBOLS",
+                "ORIGIN": "END",
+                "COUNT": 1
+              },
+              "2": {
+                "MODE": "APPEND",
+                "DATA": " Category=(Category_0)}"
+              }
+            },
+            "ELEMENTS_TO_APPLY": {
+              "PERCENT": "20",
+              "OF_RESULT": "265157D0-45F5-4ade-9E57-6646B196E13B"
+            }
+          },
+          "2": {
+            "TARGET": {"ATTRIBUTE": "Value"},
+            "OPERATIONS":
+            {
+              "1": {
+                "MODE": "ERASE_SYMBOLS",
+                "ORIGIN": "END",
+                "COUNT": 1
+              },
+              "2": {
+                "MODE": "APPEND",
+                "DATA": " Category=(Category_1)}"
+              }
+            },
+            "ELEMENTS_TO_APPLY": {
+              "PERCENT": "35",
+              "OF_RESULT": "265157D0-45F5-4ade-9E57-6646B196E13B"
+            }
+          },
+          "3": {
+            "TARGET": {"ATTRIBUTE": "Value"},
+            "OPERATIONS":
+            {
+              "1": {
+                "MODE": "ERASE_SYMBOLS",
+                "ORIGIN": "END",
+                "COUNT": 1
+              },
+              "2": {
+                "MODE": "APPEND",
+                "DATA": " Category=(Category_2)}"
+              }
+            },
+            "ELEMENTS_TO_APPLY": {
+              "PERCENT": "55",
+              "OF_RESULT": "265157D0-45F5-4ade-9E57-6646B196E13B"
+            }
+          }
       }
     }
   }

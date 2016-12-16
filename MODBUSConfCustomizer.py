@@ -51,6 +51,7 @@ def execute_commands(element, commands):
         curr_cmd = commands[cmd]
         if curr_cmd.get("DEPENDS") is None:
             if curr_cmd.get("RESULT") is None:
+                print("Processing \"{0}\" element with \"{1}\" command.".format(element.tag, commands[cmd]["TYPE"]))
                 process_element_with_command(element, commands[cmd])
         elif curr_cmd.get("RESULT") is None:
             dependent_not_executed_commands = dict()
@@ -60,6 +61,7 @@ def execute_commands(element, commands):
 
             execute_commands(element, dependent_not_executed_commands)
 
+            print("Processing \"{0}\" element with \"{1}\" command.".format(element.tag, commands[cmd]["TYPE"]))
             process_element_with_command(element, commands[cmd])
 
 
@@ -79,7 +81,58 @@ def execute_command_on_element(command_cfg, element):
 def exec_change_if_on_element(command, element):
     if command.get("RESULT") is None:
         command["RESULT"] = 0
-    pass
+
+    if command.get("CHANGES") is None:
+        raise Exception("Invalid structure of ChangeIf command.")
+
+    numbers = list(command["CHANGES"].keys())
+    numbers.sort()
+    for number in numbers:
+        if command.get("AND") is not None and type(command.get("AND")) == dict:
+            if process_and(command.get("AND"), element):
+                if change_element(command["CHANGES"][number], element):
+                    command["RESULT"] += 1
+
+
+def change_element(change, element):
+    if change.get("TARGET") is None or change.get("OPERATIONS") is None or change.get("ELEMENTS_TO_APPLY") is None:
+        return False
+
+    if change["TARGET"].get("ATTRIBUTE") is not None:
+        if element.attrib.get(change["TARGET"]["ATTRIBUTE"]) is None:
+            return False
+        return change_attribute(change, element)
+    if change["TARGET"].get("TAG") is not None:
+        return change_tag(change, element)
+    return False
+
+
+def change_attribute(change, element):
+    attribute_name = change["TARGET"]["ATTRIBUTE"]
+    operations = change["OPERATIONS"]
+
+    # непонятно надо ли сортировать ключи или же словарь уже упорядочен по индексу?????
+    operation_keys = list(operations.keys())
+    operation_keys.sort()
+    for key in operation_keys:
+        operation = operations[key]
+        if operation.get("MODE") is None:
+            raise Exception("Invalid OPERATION format.")
+        if operation["MODE"] == "ERASE_SYMBOLS":
+            if operation.get("ORIGIN") is None or operation.get("COUNT") is None:
+                raise Exception("Invalid ERASE_SYMBOLS OPERATION format.")
+            if operation["ORIGIN"] == "END":
+                element.attrib[attribute_name] = element.attrib[attribute_name][0: len(element.attrib[attribute_name]) - operation["COUNT"]]
+        if operation["MODE"] == "APPEND":
+            if operation.get("DATA") is None:
+                raise Exception("Invalid APPEND OPERATION format.")
+            element.attrib[attribute_name] += operation["DATA"]
+
+    return True
+
+
+def change_tag(change, element):
+    raise Exception("TAG changing is not implemented")
 
 
 def exec_count_if_on_element(command, element):
@@ -166,7 +219,7 @@ def process_and(and_block, element):
 
 
 def process_or(or_block, element):
-    return False
+    raise Exception("The OR statement is not implemented yet!")
 
 
 def process_value(value, operation_and_values):
@@ -175,7 +228,8 @@ def process_value(value, operation_and_values):
     if len(operation_and_values) != 1:
         return True  # not applicable
 
-    keys = operation_and_values.keys()
+    keys = list(operation_and_values.keys())
+    keys.sort()
     if not("EQ" in keys or "NEQ" in keys or "LT" in keys or "GT" in keys or "GTEQ" in keys or "LTEQ" in keys):
         return True  # not applicable
 

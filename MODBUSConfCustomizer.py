@@ -23,8 +23,13 @@ def read_cmd():
 def read_config(file_path):
     global config
     with open(file_path, "r") as config_file:
-        config = json.load(fp=config_file)
-    return
+        try:
+            config = json.load(fp=config_file)
+        except:
+            print("Error: Unexpected error while reading JSON configuration file.")
+            print("\t\"{0}\"".format(file_path))
+            return False
+    return True
 
 
 def process_xml():
@@ -215,7 +220,7 @@ def check_value(element, value_requirements):
 
 
 def check_address(address, address_requirements):
-    raise Exception("Здесь ошибка: если ключа нет в адресе, то всё равно True")
+#    raise Exception("Здесь ошибка: если ключа нет в адресе, то всё равно True")
     for item in address_requirements:
         if item in address:
             expected_item_val = address_requirements[item]
@@ -224,6 +229,8 @@ def check_address(address, address_requirements):
                     return False
             elif not process_value(address[item], expected_item_val):
                 return False
+        else:
+            return False
     return True
 
 
@@ -301,8 +308,12 @@ def process_value(value, operation_and_values):
 
 
 def main():
-    read_config(read_cmd())
+    if not read_config(read_cmd()):
+        return False
     process_xml()
+    return True
 
-main()
+if not main():
+    print("Application failed.")
+print("Ok.")
 exit()

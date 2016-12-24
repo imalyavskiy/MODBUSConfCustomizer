@@ -1,6 +1,6 @@
 {
-  "SRC":                  "C:\\Users\\i.malyavskiy\\Desktop\\temp\\ModBus\\MBTCPMaster_Station1_14k.xmlcfg",
-  "DST":                  "C:\\Users\\i.malyavskiy\\Desktop\\temp\\ModBus\\MBTCPMaster_Station1_14k_cpy.xmlcfg",
+  "SRC":                  "C:\\Users\\i.malyavskiy\\Desktop\\temp\\ModBus\\MBTCPMaster_Station1_14k.NoCat.xmlcfg",
+  "DST":                  "C:\\Users\\i.malyavskiy\\Desktop\\temp\\ModBus\\MBTCPMaster_Station1_14k.NoCat.Cpy.xmlcfg",
   "CMD": {
       "265157D0-45F5-4ade-9E57-6646B196E13B" : {
       "TYPE":               "CountIf",
@@ -74,8 +74,7 @@
             }
           },
           "ELEMENTS_TO_APPLY": {
-            "PERCENT": "20",
-            "OF_RESULT": "265157D0-45F5-4ade-9E57-6646B196E13B"
+            "COUNT":1500
           }
         },
         "2": {
@@ -93,8 +92,7 @@
             }
           },
           "ELEMENTS_TO_APPLY": {
-            "PERCENT": "35",
-            "OF_RESULT": "265157D0-45F5-4ade-9E57-6646B196E13B"
+            "COUNT":2500
           }
         },
         "3": {
@@ -111,8 +109,7 @@
             }
           },
           "ELEMENTS_TO_APPLY": {
-            "PERCENT": "55",
-            "OF_RESULT": "265157D0-45F5-4ade-9E57-6646B196E13B"
+            "COUNT":3000
           }
         }
       }
